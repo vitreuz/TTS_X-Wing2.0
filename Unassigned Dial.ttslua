@@ -1,3 +1,5 @@
+menu = require("TTS_xwing/src/Dial/Menu")
+
 -- ~~~~~~
 -- Script by dzikakulka
 -- Issues, history at: http://github.com/tjakubo2/TTS_xwing
@@ -21,14 +23,18 @@ opencolor = "#555555"
 closedcolor = "#222222"
 
 clickMode = false
+proxyMode = false
 finished_setup = true
 
 -- Save self state
 function onSave()
     if assignedShip ~= nil then
-        local state = {assignedShipGUID=assignedShip.getGUID(),
+        local state = {
+            assignedShipGUID=assignedShip.getGUID(),
                         owningPlayer=playerColor,
-                        clickMode = clickMode}
+            clickMode = clickMode,
+            proxyMode = proxyMode,
+        }
         return JSON.encode(state)
     end
 end
@@ -48,17 +54,25 @@ exOptButtons = { "ExOpt1", "ExOpt2", "ExOpt3", "ExOpt4", "ExOpt5",  "ExOpt6"}
 function onLoad(savedData)
     --self.UI.setCustomAssets(assetTable)
     clearDial()
-    self.addContextMenuItem("Toggle mode", toggleMode, false)
+    menu.init(self.clearContextMenu, self.addContextMenuItem)
+
     if savedData ~= nil then
         state = JSON.decode(savedData)
         --savedShip = getObjectFromGUID(state.assignedShipGUID)
         --playerColor = state.owningPlayer
-        clickMode = not state.clickMode
-        toggleMode()
+        clickMode = state.clickMode
+        proxyMode = state.proxyMode
+
         --if savedShip ~= nil then
         --    assignShip(savedShip)
         --end
     end
+    toggleClickMode(clickMode)
+    toggleProxyMode(proxyMode)
+
+    menu.addToggleItem(clickMode, "click mode", toggleClickMode)
+    menu.addToggleItem(proxyMode, "proxy mode", toggleProxyMode)
+    menu.update()
 end
 
 function clearOpenPanel()
@@ -791,15 +805,23 @@ hover_functions = {
     tokenPanel = function() hideTokM() end,
 }
 
-function toggleMode()
-    self.UI.setAttribute("arcPanel", "raycastTarget", clickMode)
-    self.UI.setAttribute("tokenPanel", "raycastTarget", clickMode)
-    self.UI.setAttribute("relocPanel", "raycastTarget", clickMode)
-    clickMode = not clickMode
+function toggleClickMode(enable)
+    self.UI.setAttribute("arcPanel", "raycastTarget", not enable)
+    self.UI.setAttribute("tokenPanel", "raycastTarget", not enable)
+    self.UI.setAttribute("relocPanel", "raycastTarget", not enable)
+    clickMode = enable
+
+    menu.update()
+end
+
+function toggleProxyMode(enable)
+    proxyMode = enable
+
+    menu.update()
 end
 
 function menuClick(p, option, id)
-    if clickMode == false or spectReturn(p) == true then
+    if not clickMode or spectReturn(p) == true then
         return
     end
     if openbutton == id then
@@ -810,7 +832,7 @@ function menuClick(p, option, id)
 end
 
 function menuHover(p, option, id)
-    if clickMode == true or spectReturn(p) == true then
+    if clickMode or spectReturn(p) == true then
         return
     end
     hover_functions[id]()

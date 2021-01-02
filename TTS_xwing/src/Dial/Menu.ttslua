@@ -1,0 +1,43 @@
+local MenuModule = {}
+
+local clearContextMenu
+local addContextMenuItem
+local toggleItems = {}
+
+function MenuModule.init(clearContextMenuFn, addContextMenuItemFn)
+    clearContextMenu = clearContextMenuFn
+    addContextMenuItem = addContextMenuItemFn
+end
+
+function MenuModule.addToggleItem(value, text, func)
+    local i = {
+        value = value,
+        text = text,
+        func = func,
+    }
+
+    table.insert(toggleItems, i)
+end
+
+function MenuModule.update()
+    clearContextMenu()
+
+    for i, v in ipairs(toggleItems) do
+        local text = ""
+        local value = v.value or false
+
+        if v.value then
+            text = "Disable " .. v.text
+        else
+            text = "Enable " .. v.text
+        end
+
+        print("Setting ", text, value , "->", not value)
+        addContextMenuItem(text, function() 
+            v.value = not v.value
+            v.func(v.value)
+        end)
+    end
+end
+
+return MenuModule
