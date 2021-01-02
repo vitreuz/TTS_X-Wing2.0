@@ -136,16 +136,13 @@ function UnMarkShip(args)
      ShipProxyModule.proxyTable[args.shipGUID] = nil;
 end
 
-function StartBarrelRoll(args)
-    local ship = args.ship
-    local direction = args.direction
-    local code = ''
-    if direction == "right" then
-        code = 'rr'
-    elseif direction == "left" then
-        code = 'rl'
+function StartMoveProxy(args)
+    local ship = getObjectFromGUID(args.ship_guid)
+    local code = args.code
+    local offsets = {}
+    for i, v in ipairs(args.offsets) do
+        offsets[i] = code .. v
     end
-    local offsets = { code .. '1', code .. '2', code .. '3' }
 
     local collide = true
     for i, v in ipairs(offsets) do

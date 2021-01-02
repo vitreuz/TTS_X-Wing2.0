@@ -1,0 +1,29 @@
+local UIModule = {}
+
+local setAttribute
+
+function UIModule.init(setAttributeFn)
+    setAttribute = setAttributeFn
+end
+
+function UIModule.setBarrelRoll(proxyMode) 
+    setAttribute("BarrelRightFD", "active", "true")
+    setAttribute("BarrelLeftFD", "active", "true")
+
+    setAttribute("BarrelRBtn", "active", "true")
+    setAttribute("BarrelLBtn", "active", "true")
+
+    if proxyMode then
+        setAttribute("BarrelRFBtn", "active", "false")
+        setAttribute("BarrelRBBtn", "active", "false")
+        setAttribute("BarrelLFBtn", "active", "false")
+        setAttribute("BarrelLBBtn", "active", "false")
+    else
+        setAttribute("BarrelRFBtn", "active", "true")
+        setAttribute("BarrelRBBtn", "active", "true")
+        setAttribute("BarrelLFBtn", "active", "true")
+        setAttribute("BarrelLBBtn", "active", "true")
+    end
+end
+
+return UIModule

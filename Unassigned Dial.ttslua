@@ -1,4 +1,5 @@
 menu = require("TTS_xwing/src/Dial/Menu")
+ui   = require("TTS_xwing/src/Dial/UI")
 
 -- ~~~~~~
 -- Script by dzikakulka
@@ -55,6 +56,7 @@ function onLoad(savedData)
     --self.UI.setCustomAssets(assetTable)
     clearDial()
     menu.init(self.clearContextMenu, self.addContextMenuItem)
+    ui.init(self.UI.setAttribute)
 
     if savedData ~= nil then
         state = JSON.decode(savedData)
@@ -450,14 +452,7 @@ function assignShip(ship)
             self.UI.setAttribute("CloakBtn", 'active', 'true')
         elseif v == 'BR' then
             repos = true
-            self.UI.setAttribute("BarrelRightFD", "active", "true")
-            self.UI.setAttribute("BarrelLeftFD", "active", "true")
-            self.UI.setAttribute("BarrelRBtn", "active", "true")
-            self.UI.setAttribute("BarrelRFBtn", "active", "true")
-            self.UI.setAttribute("BarrelRBBtn", "active", "true")
-            self.UI.setAttribute("BarrelLBtn", "active", "true")
-            self.UI.setAttribute("BarrelLFBtn", "active", "true")
-            self.UI.setAttribute("BarrelLBBtn", "active", "true")
+            ui.setBarrelRoll(proxyMode)
         elseif v == 'B' then
             repos = true
             self.UI.setAttribute("BoostFD", "active", "true")
@@ -683,7 +678,17 @@ function Repos(P, option, id)
     if (option ~= '-1') or (spectReturn(P) == true) then
         return
     end
-    assignedShip.setDescription(reposCommands[id] or "")
+
+    local code = reposCommands[id] or ""
+    if proxyMode then
+        Global.call("StartMoveProxy", {
+            ship_guid = assignedShip.getGUID(),
+            code = code:sub(1, -2),
+            offsets = {'1', '2', '3'},
+        })
+    else
+        assignedShip.setDescription(code)
+    end
 end
 
 arcCommands = {
