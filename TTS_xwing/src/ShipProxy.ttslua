@@ -162,6 +162,23 @@ function StartBarrelRoll(args)
     end
 end
 
+function SpawnProxyOptions(args)
+    local ship       = getObjectFromGUID(args.ship_guid)
+    local move_codes = args.move_codes or {}
+
+    local ok = nil
+    for i, move_code in ipairs(move_codes) do
+        local success = ShipProxyModule.CreateMoveProxy(move_code, ship)
+        if success == 'move' then ok = true end
+    end
+
+    if not ok then
+        local info = MoveData.DecodeInfo(move_codes[1]:sub(1,2), ship)
+        local annInfo = {type='overlap', note=info.collNote, code=info.code}
+        AnnModule.Announce(annInfo, 'all', ship)
+    end
+end
+
 ShipProxyModule.CreateMoveProxy = function(move_code, ship)
     local info = MoveData.DecodeInfo(move_code, ship)
     local finalPos = MoveModule.GetFinalPosData(move_code, ship)

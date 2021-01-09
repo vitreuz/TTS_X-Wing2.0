@@ -1,0 +1,37 @@
+local P = {}
+
+local function createOffsets(move_code, offsets)
+    local outputs = {}
+
+    if move_code:sub(1,1) == "r" then
+        move_code = move_code:sub(1,2)
+    end
+
+    for i, v in ipairs(offsets) do
+       table.insert(outputs, move_code..v)
+    end
+
+    return outputs
+end
+
+function P.isProxyable(move_code)
+    return move_code:sub(1,1) == "r"
+end
+
+function P.spawn(args)
+    local ship_guid    = args.ship_guid or ""
+    local move_code    = args.move_code or ""
+    local offsets      = args.offsets or {}
+    local button_funcs = args.button_funcs or function() end
+
+    local move_codes = createOffsets(move_code, offsets)
+
+    local proxy_args = {
+        ship_guid  = ship_guid,
+        move_codes = move_codes,
+    }
+
+    Global.call("SpawnProxyOptions", proxy_args)
+end
+
+return P
