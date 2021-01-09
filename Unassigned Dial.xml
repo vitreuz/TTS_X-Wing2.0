@@ -288,7 +288,6 @@
 	position="0 -265 -25"
 	color="#aaaaaa00"
 	showAnimation="FadeIn"
-	hideAnimation="FadeOut"
 	raycastTarget="true">
 	<VerticalLayout childAlignment="MiddleBottom"
 		childForceExpandHeight="false"
