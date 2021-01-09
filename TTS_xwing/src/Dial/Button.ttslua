@@ -2,6 +2,26 @@ local obj = self
 
 local B = {}
 
+-- TODO: make flip rotation+position changes via a single function
+
+function B.setProxyState(activate, active_proxies)
+    if activate then
+        obj.UI.show("proxyPanel")
+    else
+        obj.UI.hide("proxyPanel")
+    end
+
+    if not active_proxies then
+        return
+    end
+    for position, guid in pairs(active_proxies) do
+        local attribute_name = string.upper(position:sub(1,1)) .. position:sub(2,-1)
+        obj.UI.setAttribute("Proxy"..attribute_name.."Btn", "onMouseEnter", guid.."/onHoverEnter")
+        obj.UI.setAttribute("Proxy"..attribute_name.."Btn", "onMouseExit", guid.."/onHoverLeave")
+        obj.UI.setAttribute("Proxy"..attribute_name.."Btn", "onClick", guid.."/select")
+    end 
+end
+
 function B.setBarrelRollState(proxyMode, activate)
     if activate then
         obj.UI.setAttribute("BarrelRightFD", "active", "true")

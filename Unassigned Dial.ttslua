@@ -91,6 +91,7 @@ function clearDial()
     self.UI.hide('Setup')
     self.UI.hide("ManWin")
     self.UI.hide('arcPanel')
+    self.UI.hide('proxyPanel')
     self.UI.hide('relocPanel')
     self.UI.hide('tokenPanel')
     self.UI.hide("setManPeekPanel")
@@ -415,6 +416,7 @@ function assignShip(ship)
     self.UI.setAttribute("CenterFU", "active", "true")
     self.UI.setAttribute("arcPanel", "active", "true")
     self.UI.setAttribute("tokenPanel", "active", "true")
+    self.UI.setAttribute("proxyPanel", "active", "true")
     self.UI.setAttribute("relocPanel", "active", "true")
     self.UI.setAttribute("setManPeekPanel", "active", "true")
     assignedShip = ship
@@ -677,16 +679,20 @@ function Repos(P, option, id)
     local move_code = reposCommands[id] or ""
     if proxyMode and proxy.isProxyable(move_code) then
         proxy_settings = {
-            ship_guid    = assignedShip.getGUID(),
-            move_code    = move_code,
-            offsets      = {'1', '2', '3'},
-            button_funcs = button.setProxyButtons,
+            ship_guid   = assignedShip.getGUID(),
+            move_code   = move_code,
+            offsets     = {'1', '2', '3'},
+            button_func = button.setProxyState,
         }
 
         proxy.spawn(proxy_settings)
     else
         assignedShip.setDescription(move_code)
     end
+end
+
+function CancelProxy(player, option, id)
+    proxy.cancel(assignedShip.getGUID())
 end
 
 arcCommands = {

@@ -1,5 +1,8 @@
 local P = {}
 
+-- TODO: prevent creation of new proxies while there are current active proxies
+local active_proxies = {}
+
 local function createOffsets(move_code, offsets)
     local outputs = {}
 
@@ -14,24 +17,56 @@ local function createOffsets(move_code, offsets)
     return outputs
 end
 
+local function isDone(obj)
+    return obj == nil
+end
+
+local function isReady(obj)
+    return obj.getGUID() ~= ""
+end
+
+local function setActiveProxies(proxies)
+    active_proxies = {
+        front  = proxies[1].getGUID(),
+        center = proxies[2].getGUID(),
+        back   = proxies[3].getGUID(),
+    }
+end
+
+local function unsetActiveProxies()
+    active_proxies = {}
+end
+
+function P.cancel(ship_guid)
+    Global.call("DeleteShipProxies", {ship_guid = ship_guid})
+end
+
 function P.isProxyable(move_code)
     return move_code:sub(1,1) == "r"
 end
 
 function P.spawn(args)
-    local ship_guid    = args.ship_guid or ""
-    local move_code    = args.move_code or ""
-    local offsets      = args.offsets or {}
-    local button_funcs = args.button_funcs or function() end
+    local ship_guid   = args.ship_guid
+    local move_code   = args.move_code
+    local offsets     = args.offsets
+    local button_func = args.button_func
 
     local move_codes = createOffsets(move_code, offsets)
-
     local proxy_args = {
         ship_guid  = ship_guid,
         move_codes = move_codes,
     }
+    local proxy_objects, success = Global.call("SpawnProxyOptions", proxy_args)
 
-    Global.call("SpawnProxyOptions", proxy_args)
+    if not success then
+        return
+    end
+
+    Wait.condition(|| setActiveProxies(proxy_objects),   || isReady(proxy_objects[1]))
+    Wait.condition(|| button_func(true, active_proxies), || isReady(proxy_objects[1]))
+
+    Wait.condition(   unsetActiveProxies,  || isDone(proxy_objects[1]))
+    Wait.condition(|| button_func(false),  || isDone(proxy_objects[1]))
 end
 
 return P
