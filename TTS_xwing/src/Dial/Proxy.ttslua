@@ -7,6 +7,8 @@ local function createOffsets(move_code, offsets)
 
     if move_code:sub(1,1) == "r" then
         move_code = move_code:sub(1,2)
+    elseif move_code:sub(-1,-1) == "t" then
+        move_code = move_code:sub(1,3)
     end
 
     for i, v in ipairs(offsets) do

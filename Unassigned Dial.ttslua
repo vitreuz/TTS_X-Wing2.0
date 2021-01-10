@@ -251,7 +251,7 @@ function Undo(p)
     end
     assignedShip.setDescription("q")
     self.UI.setAttribute("UndoBtn", "active", "false")
-    if setMan:sub(-1,-1) ~='t' then
+    if setMan:sub(-1,-1) ~='t' or proxyMode then
         self.UI.setAttribute("MoveBtn", "active", "true")
         self.UI.setAttribute("MoveBtn", "textColor", "#FFFFFF")
     else
@@ -331,7 +331,22 @@ function performMove(P)
         if exOptions[curMan] ~= nil and exOptSelected == false then
             setupAlternateExecutionPanel(P, exOptions[curMan])
         elseif setMan:sub(-1,-1) == 't' then
-            self.UI.show("TalonPanel")
+            if proxyMode then
+                proxy_settings = {
+                    ship_guid   = assignedShip.getGUID(),
+                    move_code   = setMan,
+                    offsets     = {'ft', 't', 'bt'},
+                    button_func = button.setProxyState,
+                }
+                proxy.spawn(proxy_settings)
+                self.UI.setAttribute("UndoBtn", "active", "true")
+                self.UI.setAttribute("UndoBtn", "textColor", "#FFFFFF")
+                exOptSelected = false
+                befAft ='_A'
+                setDial(P)
+            else
+                self.UI.show("TalonPanel")
+            end
         else
             self.UI.setAttribute("UndoBtn", "active", "true")
             self.UI.setAttribute("UndoBtn", "textColor", "#FFFFFF")
