@@ -1,6 +1,5 @@
 local P = {}
 
--- TODO: prevent creation of new proxies while there are current active proxies
 local active_proxies = {}
 
 local function createOffsets(move_code, offsets)
@@ -15,6 +14,13 @@ local function createOffsets(move_code, offsets)
     end
 
     return outputs
+end
+
+local function isActive()
+    if not active_proxies then return false end
+
+    for k, v in pairs(active_proxies)do return true end
+    return false
 end
 
 local function isDone(obj)
@@ -46,6 +52,11 @@ function P.isProxyable(move_code)
 end
 
 function P.spawn(args)
+    if isActive() then 
+        printToAll("Please finish this ship's active proxy maneuver before setting another one")
+        return
+    end
+
     local ship_guid   = args.ship_guid
     local move_code   = args.move_code
     local offsets     = args.offsets
@@ -58,9 +69,7 @@ function P.spawn(args)
     }
     local proxy_objects, success = Global.call("SpawnProxyOptions", proxy_args)
 
-    if not success then
-        return
-    end
+    if not success then return end
 
     Wait.condition(|| setActiveProxies(proxy_objects),   || isReady(proxy_objects[1]))
     Wait.condition(|| button_func(true, active_proxies), || isReady(proxy_objects[1]))
