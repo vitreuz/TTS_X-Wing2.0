@@ -2,7 +2,34 @@ local obj = self
 
 local B = {}
 
+local offsetXY = {
+    Setup = "0 0",
+    proxyPanel = "0 -265",
+}
+
 -- TODO: make flip rotation+position changes via a single function
+function B.setAttributeFacing(attribute, face_state)
+    local up_rotation   = "0 180 0"
+    local down_rotation = "0 0 0"
+    local up_z          = "1"
+    local down_z        = "-25"
+    local base_xy = offsetXY[attribute]
+
+    local attributes = {}
+    if face_state == "Down" then
+        attributes = {
+            position = base_xy .. " " .. down_z,
+            rotation = down_rotation,
+        }
+    elseif face_state == "Up" then
+        attributes = {
+            position = base_xy .. " " .. up_z,
+            rotation = up_rotation,
+        }
+    end
+
+    obj.UI.setAttributes(attribute, attributes)
+end
 
 function B.setProxyState(activate, active_proxies)
     if activate then
