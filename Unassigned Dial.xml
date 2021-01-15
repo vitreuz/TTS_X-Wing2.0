@@ -292,20 +292,10 @@
 	<VerticalLayout childAlignment="MiddleBottom"
 		childForceExpandHeight="false"
 		spacing="5">
-		<Panel>
-			<Button id="undoFD"
-				class="DarkButton"
-				active="true"
-				onClick="CancelProxy"
-				height="60"
-				width="180"
-				rotation="0 0 180"
-				fontStyle="Bold">Cancel</Button>
-		</Panel>
 		<HorizontalLayout childAlignment="MiddleCenter"
 			childForceExpandWidth="false"
 			spacing="5">
-			<Button id="ProxyFrontBtn"
+			<Button id="proxyFrontBtn"
 				class="RelocButtons"
 				active="true">
 				<Image id="TalonForIcon"
@@ -313,7 +303,7 @@
 					image="TalonFront"
 					preserveAspect="true"></Image>
 			</Button>
-			<Button id="ProxyCenterBtn"
+			<Button id="proxyCenterBtn"
 				class="RelocButtons"
 				active="true">
 				<Image id="TalonMidIcon"
@@ -321,7 +311,7 @@
 					image="TalonMid"
 					preserveAspect="true"></Image>
 			</Button>
-			<Button id="ProxyBackBtn"
+			<Button id="proxyBackBtn"
 				class="RelocButtons"
 				active="true">
 				<Image id="TalonReaIcon"
@@ -330,6 +320,15 @@
 					preserveAspect="true"></Image>
 			</Button>
 		</HorizontalLayout>
+		<Panel>
+			<Button id="proxyCancelBtn"
+				class="DarkButton"
+				onClick="CancelProxy"
+				height="60"
+				width="180"
+				rotation="0 0 180"
+				fontStyle="Bold">Cancel</Button>
+		</Panel>
 	</VerticalLayout>
 </Panel>
 

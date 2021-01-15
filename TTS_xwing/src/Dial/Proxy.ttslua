@@ -62,6 +62,7 @@ function P.spawn(args)
     local ship_guid   = args.ship_guid
     local move_code   = args.move_code
     local offsets     = args.offsets
+    local cancellable = args.cancellable
     local button_func = args.button_func
 
     local move_codes = createOffsets(move_code, offsets)
@@ -74,7 +75,7 @@ function P.spawn(args)
     if not success then return end
 
     Wait.condition(|| setActiveProxies(proxy_objects),   || isReady(proxy_objects[1]))
-    Wait.condition(|| button_func(true, active_proxies), || isReady(proxy_objects[1]))
+    Wait.condition(|| button_func(true, cancellable, active_proxies), || isReady(proxy_objects[1]))
 
     Wait.condition(   unsetActiveProxies,  || isDone(proxy_objects[1]))
     Wait.condition(|| button_func(false),  || isDone(proxy_objects[1]))

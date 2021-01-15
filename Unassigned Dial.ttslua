@@ -696,6 +696,7 @@ function Repos(P, option, id)
             ship_guid   = assignedShip.getGUID(),
             move_code   = move_code,
             offsets     = {'1', '2', '3'},
+            cancellable = true,
             button_func = button.setProxyState,
         }
 
