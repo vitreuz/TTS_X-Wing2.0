@@ -50,6 +50,10 @@ function B.setProxyState(activate, cancellable, active_proxies)
     changeButtonState("proxyCancelBtn", cancellable)
 
     if not active_proxies then
+        obj.UI.setAttribute("proxyFrontBtn", "active", "false")
+        obj.UI.setAttribute("proxyCenterBtn", "active", "false")
+        obj.UI.setAttribute("proxyBackBtn", "active", "false")
+
         return
     end
     for position, guid in pairs(active_proxies) do
@@ -57,6 +61,7 @@ function B.setProxyState(activate, cancellable, active_proxies)
         obj.UI.setAttribute("proxy"..attribute_name.."Btn", "onMouseEnter", guid.."/onHoverEnter")
         obj.UI.setAttribute("proxy"..attribute_name.."Btn", "onMouseExit", guid.."/onHoverLeave")
         obj.UI.setAttribute("proxy"..attribute_name.."Btn", "onClick", guid.."/select")
+        obj.UI.setAttribute("proxy"..attribute_name.."Btn", "active", "true")
     end
 end
 

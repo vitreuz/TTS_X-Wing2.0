@@ -333,7 +333,7 @@ function performMove(P)
                 proxy_settings = {
                     ship_guid   = assignedShip.getGUID(),
                     move_code   = setMan,
-                    offsets     = {'ft', 't', 'bt'},
+                    offsets     = {front = 'ft', center = 't', back = 'bt'},
                     button_func = button.setProxyState,
                 }
                 proxy.spawn(proxy_settings)
@@ -695,7 +695,7 @@ function Repos(P, option, id)
         proxy_settings = {
             ship_guid   = assignedShip.getGUID(),
             move_code   = move_code,
-            offsets     = {'1', '2', '3'},
+            offsets     = {front = '1', center = '2', back = '3'},
             cancellable = true,
             button_func = button.setProxyState,
         }
@@ -1048,3 +1048,4 @@ function deleteTemplate()
   Table={[1]=assignedShip,[2]='deleteMoveTemplate',[3]=playerColor}
   Global.call("proxyPerformAction",Table)
 end
+
