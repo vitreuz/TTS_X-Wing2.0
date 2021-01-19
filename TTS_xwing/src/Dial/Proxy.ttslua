@@ -73,7 +73,10 @@ function P.spawn(args)
 
     local proxy_objects, success = Global.call("SpawnProxyOptions", proxy_args)
 
-    if not success then return end
+    if not success then 
+        obj.setVar("befAft", "_A")
+        return
+    end
 
     Wait.condition(|| setActiveProxies(proxy_objects.proxy_table),    || isReady(proxy_objects))
     Wait.condition(|| button_func(true, cancellable, active_proxies), || isReady(proxy_objects))
